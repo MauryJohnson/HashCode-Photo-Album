@@ -114,10 +114,6 @@ public class Photo {
 					  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
 					  i = T2.Second;
 					  Tags = T2.First;
-
-				      System.out.println("TAGS");
-					  for(int k=0;k<Tags.length;k+=1)
-						  System.out.print(Tags[k]+" ");
 					  
 					  
 				   }
@@ -135,10 +131,6 @@ public class Photo {
 						  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
 						  i = T2.Second;
 						  Tags = T2.First;
-					      /*System.out.println("TAGS");
-						  for(int k=0;k<Tags.length;k+=1)
-							  System.out.print(Tags[k]+" ");
-				   			*/
 				   }
 				   
 			   }
@@ -164,7 +156,10 @@ public class Photo {
 		
 		int TagsGot = 0;
 		
+		System.out.println();
+		
 		while(TagsGot<tagCount) {
+			
 			Tuple<String,Integer> T =  GetString(line,i);
 			Tags[TagsGot] = T.First;
 			i = T.Second;
@@ -173,6 +168,8 @@ public class Photo {
 			TagsGot+=1;
 		}
 			
+		System.out.println();
+		
 		Tuple<String[],Integer> T = new Tuple<String[],Integer>(Tags,i);
 		
 		return T;
