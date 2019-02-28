@@ -96,17 +96,51 @@ public class Photo {
 				
 			   //Iterate through line
 			   for(int i=0; i<line.length();i+=1) {
-				   int Tags = 0;
+				   
+				   int TagCount = 0;
+				   String[] Tags;
+				   
 				   if(line.charAt(i)=='H') {
-					   System.out.print("H");
-					  Tags = GetInt(line,i);
-					  System.out.println(Tags);
+					  
+					  System.out.print("H");
+					  
+					  //GET TAG COUNT
+					  Tuple<Integer,Integer> T = GetInt(line,i);
+					  i = T.Second;
+					  TagCount = T.First;
+					  
+					  System.out.println(TagCount);
+					  //GET TAGS
+					  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
+					  i = T2.Second;
+					  Tags = T2.First;
+
+				      System.out.println("TAGS");
+					  for(int k=0;k<Tags.length;k+=1)
+						  System.out.print(Tags[k]+" ");
+					  
+					  
 				   }
+				  
 				   else if(line.charAt(i)=='V') {
+					  
 					   System.out.print("V");
-					  Tags = GetInt(line,i);
-					   System.out.println(Tags);
+					   	  //GET TAG COUNT
+						  Tuple<Integer,Integer> T = GetInt(line,i);
+						  i = T.Second;
+						  TagCount = T.First;
+						  
+						  System.out.println(TagCount);
+						  //GET TAGS
+						  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
+						  i = T2.Second;
+						  Tags = T2.First;
+					      /*System.out.println("TAGS");
+						  for(int k=0;k<Tags.length;k+=1)
+							  System.out.print(Tags[k]+" ");
+				   			*/
 				   }
+				   
 			   }
 			   
 			}
@@ -117,7 +151,59 @@ public class Photo {
 		
 	}
 
-	private static int GetInt(String line, int i) {
+	/**
+	 * Get Tags for as far as tagcount counts all
+	 * @param line
+	 * @param tagCount
+	 * @param i
+	 * @return
+	 */
+	private static Tuple<String[],Integer> GetTags(String line, int tagCount, int i) {
+		// TODO Auto-generated method stub
+		String[] Tags = new String[tagCount];
+		
+		int TagsGot = 0;
+		
+		while(TagsGot<tagCount) {
+			Tuple<String,Integer> T =  GetString(line,i);
+			Tags[TagsGot] = T.First;
+			i = T.Second;
+			
+			System.out.print("TAG GOT "+(TagsGot+1)+":"+Tags[TagsGot]+"\n");
+			TagsGot+=1;
+		}
+			
+		Tuple<String[],Integer> T = new Tuple<String[],Integer>(Tags,i);
+		
+		return T;
+	}
+
+	/**
+	 * Get String 
+	 */
+	private static Tuple<String,Integer> GetString(String line, int i) {
+		// TODO Auto-generated method stub
+		for(;i<line.length();i+=1) {
+			if(line.charAt(i)!=' ') {
+				break;
+			}
+		}
+		
+		String res = "";
+		
+		for(;i<line.length();i+=1) {
+			if(line.charAt(i)==' ' || line.charAt(i)=='\n') {
+				break;
+			}
+			res+=line.charAt(i);
+		}
+		
+		Tuple<String,Integer> T = new Tuple<String,Integer>(res,i);
+		
+		return T;
+	}
+
+	private static Tuple<Integer,Integer> GetInt(String line, int i) {
 		// TODO Auto-generated method stub
 		
 		//Iterate until reach num
@@ -136,7 +222,9 @@ public class Photo {
 			I+=line.charAt(i);
 		}
 		
-		return Integer.parseInt(I);
+		Tuple<Integer,Integer> T = new Tuple<Integer,Integer>(Integer.parseInt(I),i);
+		
+		return T;
 	}
 	
 }
