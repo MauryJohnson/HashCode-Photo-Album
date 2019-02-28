@@ -61,7 +61,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"a_example.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,6 +131,10 @@ public class Photo {
 						  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
 						  i = T2.Second;
 						  Tags = T2.First;
+						  
+						  
+						  
+						  
 				   }
 				   
 				   
