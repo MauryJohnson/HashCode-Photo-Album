@@ -30,7 +30,7 @@ public class Photo {
 		
 		A.sort((C,D)->{return InterestFactor(C,D);});
 
-		System.out.println("A SORTED:\n"+A);
+		//System.out.println("A SORTED:\n"+A);
 		
 		//HASHTABLE maps a tag to some photo
 		Hashtable<String,ArrayList<Photo>> H = new Hashtable<String,ArrayList<Photo>>();	
@@ -78,7 +78,7 @@ public class Photo {
 					if(H.get(A.get(i).Tags[j]).size()>MAXSize) {
 						MAXSize = H.get(A.get(i).Tags[j]).size();
 						MAXA = H.get(A.get(i).Tags[j]);
-						System.out.println("MAX ARR\n"+ MAXA);
+						//System.out.println("MAX ARR\n"+ MAXA);
 					}
 				}
 			}
@@ -92,7 +92,7 @@ public class Photo {
 					for(int I=0; I<H.get(MAXA.get(k).Tags[l]).size();I+=1)
 						
 						if(Visited.get(H.get(MAXA.get(k).Tags[l]).get(I))==null) {
-							System.out.println("FOUND!" + Visited.get(H.get(MAXA.get(k).Tags[l]).get(I)));
+							//System.out.println("FOUND!" + Visited.get(H.get(MAXA.get(k).Tags[l]).get(I)));
 							Visited.put(H.get(MAXA.get(k).Tags[l]).get(I), H.get(A.get(k).Tags[l]).get(I));
 						}
 				
@@ -129,7 +129,7 @@ public class Photo {
 	public static int InterestFactor(Photo P1, Photo P2) {
 		//IIF VERTICAL AND HORIZONTAL PHOTOS COMPARED
 		if(P1.Type.compareTo(P2.Type)!=0) {
-			System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+-1+"\n");
+			//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+-1+"\n");
 			
 			return -1;
 		}
@@ -166,7 +166,7 @@ public class Photo {
 				MIN = S[i];
 		}
 		
-		System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN+"\n");
+		//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN+"\n");
 		
 		return MIN;
 	}
@@ -205,7 +205,7 @@ public class Photo {
 					res+=splitString[i];
 				}
 				Size = Integer.parseInt(res);
-				System.out.println("SIZE:"+Size);
+				//System.out.println("SIZE:"+Size);
 			}
 				
 			while ((line = r.readLine()) != null) {
@@ -220,14 +220,14 @@ public class Photo {
 				   
 				   if(line.charAt(i)=='H') {
 					  
-					  System.out.print("H");
+					  //System.out.print("H");
 					  
 					  //GET TAG COUNT
 					  Tuple<Integer,Integer> T = GetInt(line,i);
 					  i = T.Second;
 					  TagCount = T.First;
 					  
-					  System.out.println(TagCount);
+					  //System.out.println(TagCount);
 					  //GET TAGS
 					  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
 					  i = T2.Second;
@@ -240,13 +240,13 @@ public class Photo {
 				  
 				   else if(line.charAt(i)=='V') {
 					  
-					   System.out.print("V");
+					  // System.out.print("V");
 					   	  //GET TAG COUNT
 						  Tuple<Integer,Integer> T = GetInt(line,i);
 						  i = T.Second;
 						  TagCount = T.First;
 						  
-						  System.out.println(TagCount);
+						  //System.out.println(TagCount);
 						  //GET TAGS
 						  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
 						  i = T2.Second;
@@ -268,7 +268,7 @@ public class Photo {
 			e.printStackTrace();
 		}
 		
-		System.out.println("ALL PHOTOS:"+Photos);
+		//System.out.println("ALL PHOTOS:"+Photos);
 		
 		Photo.Interests(Photos);
 		
@@ -295,7 +295,7 @@ public class Photo {
 			Tags[TagsGot] = T.First;
 			i = T.Second;
 			
-			System.out.print("TAG GOT "+(TagsGot+1)+":"+Tags[TagsGot]+"\n");
+			//System.out.print("TAG GOT "+(TagsGot+1)+":"+Tags[TagsGot]+"\n");
 			TagsGot+=1;
 		}
 			
