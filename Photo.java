@@ -39,6 +39,8 @@ public class Photo {
 	public static int InterestFactor(Photo P1, Photo P2) {
 		//IIF VERTICAL AND HORIZONTAL PHOTOS COMPARED
 		if(P1.Type.compareTo(P2.Type)!=0) {
+			System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+0+"\n");
+			
 			return 0;
 		}
 		
@@ -74,7 +76,7 @@ public class Photo {
 				MIN = S[i];
 		}
 		
-		System.out.println("INTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN);
+		System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN+"\n");
 		
 		return MIN;
 	}
@@ -87,7 +89,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"E.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
