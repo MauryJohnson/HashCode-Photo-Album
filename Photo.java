@@ -87,15 +87,27 @@ public class Photo {
 			//Once have maximum possible array, push all elements
 			for(int k=0 ;k<MAXA.size();k+=1) {
 				
-				for(int l=0; l<MAXA.get(k).Tags.length;l+=1)
+				for(int l=0; l<MAXA.get(k).Tags.length;l+=1) {
 					
+					if(H.get(MAXA.get(k).Tags[l])!=null)
 					for(int I=0; I<H.get(MAXA.get(k).Tags[l]).size();I+=1)
 						
+						if(l<MAXA.get(k).Tags.length) {
 						if(Visited.get(H.get(MAXA.get(k).Tags[l]).get(I))==null) {
-							//System.out.println("FOUND!" + Visited.get(H.get(MAXA.get(k).Tags[l]).get(I)));
+							
+							System.out.println("FOUND!" + (H.get(MAXA.get(k).Tags[l]).get(I)));
+							System.out.println("TAGS LENGTH:"+MAXA.get(k).Tags.length+ " L:" +l)
+							;
+							
+							try {
 							Visited.put(H.get(MAXA.get(k).Tags[l]).get(I), H.get(A.get(k).Tags[l]).get(I));
+							}
+							catch(Exception e) {
+								System.err.println("CAUGHT");
+							}
 						}
-				
+					}
+				}
 			}
 			
 			
@@ -131,7 +143,7 @@ public class Photo {
 		if(P1.Type.compareTo(P2.Type)!=0) {
 			//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+-1+"\n");
 			
-			return -1;
+			return 0;
 		}
 		
 		int[] S = {
@@ -179,7 +191,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"B.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
