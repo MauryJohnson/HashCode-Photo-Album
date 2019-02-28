@@ -16,9 +16,10 @@ public class Photo {
 	}
 
 	public static int InterestFactor(Photo P1, Photo P2) {
-		int s1 = P1.Tags.length;
-		int s2 = P2.Tags.length;
-		int s3 = 0;
+		int[] S = {
+		P1.Tags.length,
+		P2.Tags.length
+		};
 		
 		int i=0;
 		
@@ -33,12 +34,27 @@ public class Photo {
 		//Look for any similar tags and add those to count s3
 		for(;i<P2.Tags.length;i+=1) {
 			if(H.get(P2.Tags[i])!=null) {
-				s3+=1;
+				S[2]+=1;
 			}
 		}
 		
+		int MIN = Integer.MAX_VALUE;
+	
+		i=0;
 		
-		return s3;
+		for(;i<S.length;i+=1) {
+			if(S[i]<MIN)
+				MIN = S[i];
+		}
+		
+		return MIN;
+	}
+	
+	//WHERE WE CAN TEST CODE
+	public static void main(String[] args) {
+		
+		
+		
 	}
 	
 }
