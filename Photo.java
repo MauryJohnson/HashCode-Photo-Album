@@ -212,7 +212,7 @@ public class Photo {
 		if(P1.Type.compareTo(P2.Type)!=0) {
 			//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+-1+"\n");
 			
-			return 0;
+			return -1;
 		}
 		
 		int[] S = {
@@ -260,7 +260,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"C.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -355,7 +355,7 @@ public class Photo {
 		
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("./src/AnswerC.txt", "UTF-8");
+			writer = new PrintWriter("./src/AnswerA.txt", "UTF-8");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
