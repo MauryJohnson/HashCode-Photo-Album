@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Photo {
@@ -53,8 +59,84 @@ public class Photo {
 	//WHERE WE CAN TEST CODE
 	public static void main(String[] args) {
 		
+		InputStream inputstream = null;
+		try {
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"a_example.txt");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		BufferedReader r = new BufferedReader(new InputStreamReader(inputstream));
 		
+		//Fist number is number of photos total
+		
+		//HX or VX is horizintal or vertical photo with X tags
+		
+		String line;
+		
+		int Size = 0;
+		String[] splitString;
+		
+		try {
+			
+			if((line = r.readLine()) != null) {
+				splitString = line.split("\\s+");
+				String res = "";
+				for(int i=0; i<splitString.length;i+=1) {
+					res+=splitString[i];
+				}
+				Size = Integer.parseInt(res);
+				System.out.println("SIZE:"+Size);
+			}
+				
+			while ((line = r.readLine()) != null) {
+			   //Do stuff with the array here, i.e. construct the index.
+				
+				
+			   //Iterate through line
+			   for(int i=0; i<line.length();i+=1) {
+				   int Tags = 0;
+				   if(line.charAt(i)=='H') {
+					   System.out.print("H");
+					  Tags = GetInt(line,i);
+					  System.out.println(Tags);
+				   }
+				   else if(line.charAt(i)=='V') {
+					   System.out.print("V");
+					  Tags = GetInt(line,i);
+					   System.out.println(Tags);
+				   }
+			   }
+			   
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	private static int GetInt(String line, int i) {
+		// TODO Auto-generated method stub
+		
+		//Iterate until reach num
+		for(;i<line.length();i+=1) {
+			if(Character.isDigit(line.charAt(i))){
+				break;
+			}
+		}
+		
+		String I = "";
+		//Store Integer
+		for(;i<line.length();i+=1) {
+			if(!Character.isDigit(line.charAt(i))){
+				break;
+			}
+			I+=line.charAt(i);
+		}
+		
+		return Integer.parseInt(I);
 	}
 	
 }
