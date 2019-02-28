@@ -30,6 +30,8 @@ public class Photo {
 		
 		A.sort((C,D)->{return InterestFactor(C,D);});
 		
+		System.out.println("SORTED:\n"+A);
+		
 		return A;
 		
 	}
@@ -72,6 +74,8 @@ public class Photo {
 				MIN = S[i];
 		}
 		
+		System.out.println("INTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN);
+		
 		return MIN;
 	}
 	
@@ -83,7 +87,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"E.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,8 +179,6 @@ public class Photo {
 		System.out.println("ALL PHOTOS:"+Photos);
 		
 		Photo.Interests(Photos);
-		
-		System.out.println("SORTED PHOTOS:" + Photos);
 		
 	}
 
