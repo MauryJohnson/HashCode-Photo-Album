@@ -8,8 +8,12 @@ import java.util.*;
 
 public class Photo {
 	
+	//
 	String Type;
+	//
 	String[] Tags;
+	//Each photo has interest value for all other photos
+	ArrayList<Integer> Interests = new ArrayList<Integer>();
 	
 	public Photo(String Type, String[] Tags) {
 		this.Type=Type;
@@ -20,11 +24,26 @@ public class Photo {
 	public static void ParseFile() {
 		
 	}
+	
+	public static ArrayList<Photo> Interests(ArrayList<Photo> A){
+		//ArrayList<Photo> I = new ArrayList<Photo>();
+		
+		A.sort((C,D)->{return InterestFactor(C,D);});
+		
+		return A;
+		
+	}
 
 	public static int InterestFactor(Photo P1, Photo P2) {
+		//IIF VERTICAL AND HORIZONTAL PHOTOS COMPARED
+		if(P1.Type.compareTo(P2.Type)!=0) {
+			return 0;
+		}
+		
 		int[] S = {
 		P1.Tags.length,
-		P2.Tags.length
+		P2.Tags.length,
+		0
 		};
 		
 		int i=0;
@@ -58,6 +77,9 @@ public class Photo {
 	
 	//WHERE WE CAN TEST CODE
 	public static void main(String[] args) {
+		
+		
+		ArrayList<Photo> Photos = new ArrayList<Photo>();
 		
 		InputStream inputstream = null;
 		try {
@@ -116,6 +138,8 @@ public class Photo {
 					  Tags = T2.First;
 					  
 					  
+					  Photos.add(new Photo("H",Tags));
+					  
 				   }
 				  
 				   else if(line.charAt(i)=='V') {
@@ -132,8 +156,8 @@ public class Photo {
 						  i = T2.Second;
 						  Tags = T2.First;
 						  
-						  
-						  
+
+						  Photos.add(new Photo("V",Tags));
 						  
 				   }
 				   
@@ -147,6 +171,12 @@ public class Photo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("ALL PHOTOS:"+Photos);
+		
+		Photo.Interests(Photos);
+		
+		System.out.println("SORTED PHOTOS:" + Photos);
 		
 	}
 
@@ -229,6 +259,14 @@ public class Photo {
 		Tuple<Integer,Integer> T = new Tuple<Integer,Integer>(Integer.parseInt(I),i);
 		
 		return T;
+	}
+	
+	public String toString() {
+		String s = "";
+		for(int i=0; i<this.Tags.length;i+=1)
+			s+=this.Tags[i]+" ";
+		
+		return this.Type +"\n"+ s+"\n"+this.Interests + "\n";
 	}
 	
 }
