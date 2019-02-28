@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class Photo {
@@ -11,11 +13,11 @@ public class Photo {
 	//
 	String Type;
 	//
-	String[] Tags;
+	ArrayList<String> Tags;
 	//Each photo has interest value for all other photos
 	ArrayList<Integer> Interests = new ArrayList<Integer>();
 	
-	public Photo(String Type, String[] Tags) {
+	public Photo(String Type, ArrayList<String> Tags) {
 		this.Type=Type;
 		this.Tags=Tags;
 	}
@@ -26,7 +28,6 @@ public class Photo {
 	}
 	
 	public static ArrayList<Photo> Interests(ArrayList<Photo> A){
-		//ArrayList<Photo> I = new ArrayList<Photo>();
 		
 		A.sort((C,D)->{return InterestFactor(C,D);});
 
@@ -37,22 +38,22 @@ public class Photo {
 		
 		//Map ALL photos
 		for(int i=0; i<A.size();i+=1) {
-			for(int j=0; j<A.get(i).Tags.length;j+=1) {
-				if(H.get(A.get(i).Tags[j])==null) {
+			for(int j=0; j<A.get(i).Tags.size();j+=1) {
+				if(H.get(A.get(i).Tags.get(j))==null) {
 				ArrayList<Photo> B = new ArrayList<Photo>();
 				B.add(A.get(i));
-				H.put(A.get(i).Tags[j],B);
+				H.put(A.get(i).Tags.get(j),B);
 				}
 				else {
-					H.get(A.get(i).Tags[j]).add(A.get(i));			
+					H.get(A.get(i).Tags.get(j)).add(A.get(i));			
 				}
 			}
 		}
 		
 		for(int i=0; i<A.size();i+=1) {
 
-			for(int j=0; j<A.get(i).Tags.length;j+=1) {
-				H.get(A.get(i).Tags[j]).sort((C,D)->Photo.InterestFactor(C, D));
+			for(int j=0; j<A.get(i).Tags.size();j+=1) {
+				H.get(A.get(i).Tags.get(j)).sort((C,D)->Photo.InterestFactor(C, D));
 			}
 			
 		}
@@ -68,43 +69,48 @@ public class Photo {
 		//Maximize from entries of H Table
 		for(int i=0; i<A.size();i+=1) {
 			
+			MAXSize = Integer.MIN_VALUE;
+			MAXA = null;
+			 
 			Visited = new Hashtable<Photo,Photo>();
 			
-			//MAXA = null;
-			
 			//Get Maximum possible array
-			for(int j=0; j<A.get(i).Tags.length;j+=1) {
-				if(H.get(A.get(i).Tags[j])!=null) {
-					if(H.get(A.get(i).Tags[j]).size()>MAXSize) {
-						MAXSize = H.get(A.get(i).Tags[j]).size();
-						MAXA = H.get(A.get(i).Tags[j]);
+			for(int j=0; j<A.get(i).Tags.size();j+=1) {
+				if(H.get(A.get(i).Tags.get(j))!=null) {
+					if(H.get(A.get(i).Tags.get(j)).size()>MAXSize) {
+						MAXSize = H.get(A.get(i).Tags.get(j)).size();
+						MAXA = H.get(A.get(i).Tags.get(j));
 						//System.out.println("MAX ARR\n"+ MAXA);
 					}
 				}
 			}
 			
 			
+			if(MAXA!=null)
+			
 			//Once have maximum possible array, push all elements
 			for(int k=0 ;k<MAXA.size();k+=1) {
 				
-				for(int l=0; l<MAXA.get(k).Tags.length;l+=1) {
+				for(int l=0; l<MAXA.get(k).Tags.size();l+=1) {
 					
-					if(H.get(MAXA.get(k).Tags[l])!=null)
-					for(int I=0; I<H.get(MAXA.get(k).Tags[l]).size();I+=1)
+					if(H.get(MAXA.get(k).Tags.get(l))!=null)
+					for(int I=0; I<H.get(MAXA.get(k).Tags.get(l)).size();I+=1)
 						
-						if(l<MAXA.get(k).Tags.length) {
-						if(Visited.get(H.get(MAXA.get(k).Tags[l]).get(I))==null) {
+						if(l<MAXA.get(k).Tags.size()) {
+						if(Visited.get(H.get(MAXA.get(k).Tags.get(l)).get(I))==null) {
 							
-							System.out.println("FOUND!" + (H.get(MAXA.get(k).Tags[l]).get(I)));
-							System.out.println("TAGS LENGTH:"+MAXA.get(k).Tags.length+ " L:" +l)
+							System.out.println("FOUND!" + (H.get(MAXA.get(k).Tags.get(l)).get(I)));
+							System.out.println("TAGS LENGTH:"+MAXA.get(k).Tags.size()+ " L:" +l+" "+H.get(MAXA.get(k).Tags.get(l)).get(I));
 							;
 							
-							try {
-							Visited.put(H.get(MAXA.get(k).Tags[l]).get(I), H.get(A.get(k).Tags[l]).get(I));
-							}
-							catch(Exception e) {
-								System.err.println("CAUGHT");
-							}
+							for(Photo P:H.get(MAXA.get(k).Tags.get(l)))
+								try {
+									Visited.put(P,P);
+									}
+								catch(Exception e) {
+										System.err.println(e);
+								}
+							
 						}
 					}
 				}
@@ -118,24 +124,87 @@ public class Photo {
 		int MAX = Integer.MIN_VALUE;
 		int IDX = 0;
 		
+		//Add all visited indices
+		Hashtable<Integer,Hashtable<Photo,Photo>> VI = new Hashtable<Integer,Hashtable<Photo,Photo>>();
+		
+		//All Added Photos for result
+		Hashtable<Photo,Photo> AP  = new Hashtable<Photo,Photo>();	
+		
+		//int I=0;
+		
+		while(VI.size()<=AllVisited.size() /*&& I<(AllVisited.size()*AllVisited.size())*/) {
+		
+		MAX = Integer.MIN_VALUE;
+		IDX = -1;
+		Hashtable<Photo,Photo> H2 = null;	
+		
+		//Look at all hashtables look for largest ht and iterate down from there
 		for(int i=0; i<AllVisited.size();i+=1) {
-			if(AllVisited.get(i).size()>MAX) {
+			//final int I = i;
+			
+			//If found a max visited and it wasn't already visited
+			if(AllVisited.get(i).size()>MAX && VI.get(i)==null) {
 				MAX = AllVisited.get(i).size();
+				H2 = AllVisited.get(i);
 				IDX = i;
 			}
+			
 		}
 		
+		if(H2==null) {
+		System.out.println("DONE");
+		break;	
+		}
 		
+		VI.put(IDX,H2);
 		
+		//Next Largest Visited 
 		for(Photo P:AllVisited.get(IDX).values()) {
+			if(AP.get(P)==null) {
 			Res.add(P);
+			AP.put(P,P);
+			}
+		}
+	
+		//I+=1;
+		
 		}
 		
-	
+		Res.sort((C,D)->Photo.InterestFactor(C, D));
+		
 		System.out.println("RESULT:\n"+Res);
 		
 		return Res;
 		
+	}
+
+	private static int SizeAll(ArrayList<Hashtable<Photo, Photo>> allVisited) {
+		// TODO Auto-generated method stub
+		int SIZE=  0;
+		
+		for(Hashtable<Photo,Photo> h:allVisited)
+			SIZE+=h.size();
+		
+		return SIZE;
+	}
+
+	/**
+	 * Size of all hashes in ht
+	 * @param vI
+	 * @return
+	 */
+	private static int SizeAll(Hashtable<Integer, Hashtable<Photo, Photo>> vI,Hashtable<Photo,Photo> AP) {
+		// TODO Auto-generated method stub
+		
+		int SIZE = 0;
+		
+		for(Hashtable<Photo,Photo>H:vI.values()) {
+			for(Photo P:H.values())
+				if(AP.get(P)!=null)
+					SIZE+=H.size();
+		}
+		
+		return SIZE;
 	}
 
 	public static int InterestFactor(Photo P1, Photo P2) {
@@ -147,8 +216,8 @@ public class Photo {
 		}
 		
 		int[] S = {
-		P1.Tags.length,
-		P2.Tags.length,
+		P1.Tags.size(),
+		P2.Tags.size(),
 		0
 		};
 		
@@ -156,15 +225,15 @@ public class Photo {
 		
 		Hashtable<String,String> H = new Hashtable<String,String>();
 		
-		for(;i<P1.Tags.length;i+=1) {
-			H.put(P1.Tags[i], P1.Tags[i]);
+		for(;i<P1.Tags.size();i+=1) {
+			H.put(P1.Tags.get(i), P1.Tags.get(i));
 		}
 		
 		i=0;
 		
 		//Look for any similar tags and add those to count s3
-		for(;i<P2.Tags.length;i+=1) {
-			if(H.get(P2.Tags[i])!=null) {
+		for(;i<P2.Tags.size();i+=1) {
+			if(H.get(P2.Tags.get(i))!=null) {
 				S[2]+=1;
 			}
 		}
@@ -191,7 +260,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"B.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"C.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -228,7 +297,7 @@ public class Photo {
 			   for(int i=0; i<line.length();i+=1) {
 				   
 				   int TagCount = 0;
-				   String[] Tags;
+				   ArrayList<String> Tags;
 				   
 				   if(line.charAt(i)=='H') {
 					  
@@ -241,7 +310,7 @@ public class Photo {
 					  
 					  //System.out.println(TagCount);
 					  //GET TAGS
-					  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
+					  Tuple<ArrayList<String>, Integer> T2 = GetTags(line,TagCount,i);
 					  i = T2.Second;
 					  Tags = T2.First;
 					  
@@ -260,7 +329,7 @@ public class Photo {
 						  
 						  //System.out.println(TagCount);
 						  //GET TAGS
-						  Tuple<String[], Integer> T2 = GetTags(line,TagCount,i);
+						  Tuple<ArrayList<String>, Integer> T2 = GetTags(line,TagCount,i);
 						  i = T2.Second;
 						  Tags = T2.First;
 						  
@@ -282,7 +351,31 @@ public class Photo {
 		
 		//System.out.println("ALL PHOTOS:"+Photos);
 		
-		Photo.Interests(Photos);
+		ArrayList<Photo> Res = Photo.Interests(Photos);
+		
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter("./src/AnswerC.txt", "UTF-8");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		writer.println(Res.size());
+		
+		for(int i=0 ;i<Res.size();i+=1) {
+			String s = "";
+			for(int j=0; j<Res.get(i).Tags.size();j+=1) {
+				s+=Res.get(i).Tags.get(j)+ " ";
+			}
+			writer.print("\n"+Res.get(i).Type + Res.get(i).Tags.size()+" "+s+"\n");
+			
+		}
+		
+		writer.close();
 		
 	}
 
@@ -293,9 +386,9 @@ public class Photo {
 	 * @param i
 	 * @return
 	 */
-	private static Tuple<String[],Integer> GetTags(String line, int tagCount, int i) {
+	private static Tuple<ArrayList<String>,Integer> GetTags(String line, int tagCount, int i) {
 		// TODO Auto-generated method stub
-		String[] Tags = new String[tagCount];
+		ArrayList<String> Tags = new ArrayList<String>();
 		
 		int TagsGot = 0;
 		
@@ -304,7 +397,7 @@ public class Photo {
 		while(TagsGot<tagCount) {
 			
 			Tuple<String,Integer> T =  GetString(line,i);
-			Tags[TagsGot] = T.First;
+			Tags.add(T.First);
 			i = T.Second;
 			
 			//System.out.print("TAG GOT "+(TagsGot+1)+":"+Tags[TagsGot]+"\n");
@@ -313,7 +406,7 @@ public class Photo {
 			
 		System.out.println();
 		
-		Tuple<String[],Integer> T = new Tuple<String[],Integer>(Tags,i);
+		Tuple<ArrayList<String>,Integer> T = new Tuple<ArrayList<String>,Integer>(Tags,i);
 		
 		return T;
 	}
@@ -369,8 +462,8 @@ public class Photo {
 	
 	public String toString() {
 		String s = "";
-		for(int i=0; i<this.Tags.length;i+=1)
-			s+=this.Tags[i]+" ";
+		for(int i=0; i<this.Tags.size();i+=1)
+			s+=this.Tags.get(i)+" ";
 		
 		return this.Type +"\n"+ s+"\n"+this.Interests + "\n";
 	}
