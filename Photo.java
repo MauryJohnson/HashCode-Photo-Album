@@ -14,8 +14,12 @@ public class Photo {
 	String Type;
 	//
 	ArrayList<String> Tags;
+	
 	//Each photo has interest value for all other photos
-	ArrayList<Integer> Interests = new ArrayList<Integer>();
+	Hashtable<Integer,Integer> Interests = new Hashtable<Integer,Integer>();
+	
+	//Compute distance between all interests in order to find min Interests Distance for each
+	//int InterestsDistance = 0;
 	
 	public Photo(String Type, ArrayList<String> Tags) {
 		this.Type=Type;
@@ -27,155 +31,100 @@ public class Photo {
 		
 	}
 	
+	/**
+	 * Try next best approach
+	 * Choose first picture then next picture will be one that satisfies
+	 * Interest the best!
+	 * Continue until final pic used
+	 * @param A
+	 * @return
+	 */
 	public static ArrayList<Photo> Interests(ArrayList<Photo> A){
 		
-		A.sort((C,D)->{return InterestFactor(C,D);});
-
-		//System.out.println("A SORTED:\n"+A);
+		ArrayList<Photo> CorrectOrder = new ArrayList<Photo>();
 		
-		//HASHTABLE maps a tag to some photo
-		Hashtable<String,ArrayList<Photo>> H = new Hashtable<String,ArrayList<Photo>>();	
-		
-		//Map ALL photos
-		for(int i=0; i<A.size();i+=1) {
-			for(int j=0; j<A.get(i).Tags.size();j+=1) {
-				if(H.get(A.get(i).Tags.get(j))==null) {
-				ArrayList<Photo> B = new ArrayList<Photo>();
-				B.add(A.get(i));
-				H.put(A.get(i).Tags.get(j),B);
-				}
-				else {
-					H.get(A.get(i).Tags.get(j)).add(A.get(i));			
-				}
-			}
-		}
-		
-		for(int i=0; i<A.size();i+=1) {
-
-			for(int j=0; j<A.get(i).Tags.size();j+=1) {
-				H.get(A.get(i).Tags.get(j)).sort((C,D)->Photo.InterestFactor(C, D));
-			}
-			
-		}
-		
-		
-		ArrayList<Hashtable<Photo,Photo>> AllVisited = new ArrayList<Hashtable<Photo,Photo>>();
-		Hashtable<Photo,Photo> Visited = new Hashtable<Photo,Photo>();
-		
-		ArrayList<Photo> Res = new ArrayList<Photo>();
-		
-		int MAXSize = Integer.MIN_VALUE;
-		ArrayList<Photo> MAXA = null;
-		//Maximize from entries of H Table
-		for(int i=0; i<A.size();i+=1) {
-			
-			MAXSize = Integer.MIN_VALUE;
-			MAXA = null;
-			 
-			Visited = new Hashtable<Photo,Photo>();
-			
-			//Get Maximum possible array
-			for(int j=0; j<A.get(i).Tags.size();j+=1) {
-				if(H.get(A.get(i).Tags.get(j))!=null) {
-					if(H.get(A.get(i).Tags.get(j)).size()>MAXSize) {
-						MAXSize = H.get(A.get(i).Tags.get(j)).size();
-						MAXA = H.get(A.get(i).Tags.get(j));
-						//System.out.println("MAX ARR\n"+ MAXA);
-					}
-				}
-			}
-			
-			
-			if(MAXA!=null)
-			
-			//Once have maximum possible array, push all elements
-			for(int k=0 ;k<MAXA.size();k+=1) {
-				
-				for(int l=0; l<MAXA.get(k).Tags.size();l+=1) {
-					
-					if(H.get(MAXA.get(k).Tags.get(l))!=null)
-					for(int I=0; I<H.get(MAXA.get(k).Tags.get(l)).size();I+=1)
-						
-						if(l<MAXA.get(k).Tags.size()) {
-						if(Visited.get(H.get(MAXA.get(k).Tags.get(l)).get(I))==null) {
-							
-							System.out.println("FOUND!" + (H.get(MAXA.get(k).Tags.get(l)).get(I)));
-							System.out.println("TAGS LENGTH:"+MAXA.get(k).Tags.size()+ " L:" +l+" "+H.get(MAXA.get(k).Tags.get(l)).get(I));
-							;
-							
-							for(Photo P:H.get(MAXA.get(k).Tags.get(l)))
-								try {
-									Visited.put(P,P);
-									}
-								catch(Exception e) {
-										System.err.println(e);
-								}
-							
-						}
-					}
-				}
-			}
-			
-			
-			AllVisited.add(Visited);
-			
-		}
-		
-		int MAX = Integer.MIN_VALUE;
-		int IDX = 0;
-		
-		//Add all visited indices
-		Hashtable<Integer,Hashtable<Photo,Photo>> VI = new Hashtable<Integer,Hashtable<Photo,Photo>>();
-		
-		//All Added Photos for result
-		Hashtable<Photo,Photo> AP  = new Hashtable<Photo,Photo>();	
-		
-		//int I=0;
-		
-		while(VI.size()<=AllVisited.size() /*&& I<(AllVisited.size()*AllVisited.size())*/) {
-		
-		MAX = Integer.MIN_VALUE;
-		IDX = -1;
-		Hashtable<Photo,Photo> H2 = null;	
-		
-		//Look at all hashtables look for largest ht and iterate down from there
-		for(int i=0; i<AllVisited.size();i+=1) {
-			//final int I = i;
-			
-			//If found a max visited and it wasn't already visited
-			if(AllVisited.get(i).size()>MAX && VI.get(i)==null) {
-				MAX = AllVisited.get(i).size();
-				H2 = AllVisited.get(i);
-				IDX = i;
-			}
-			
-		}
-		
-		if(H2==null) {
-		System.out.println("DONE");
-		break;	
-		}
-		
-		VI.put(IDX,H2);
-		
-		//Next Largest Visited 
-		for(Photo P:AllVisited.get(IDX).values()) {
-			if(AP.get(P)==null) {
-			Res.add(P);
-			AP.put(P,P);
-			}
-		}
+		//CorrectOrder.add(A.get(0));
 	
-		//I+=1;
+		A.sort((B,C)->{return B.Type.compareTo(C.Type);});
 		
+		ArrayList<Integer> Randoms = new ArrayList<Integer>();
+		for(int i=0; i<A.size();i+=1) {
+			Randoms.add(i);
 		}
 		
-		Res.sort((C,D)->Photo.InterestFactor(C, D));
+		Collections.shuffle(Randoms);
 		
-		System.out.println("RESULT:\n"+Res);
+		//Random R = new Random();
 		
-		return Res;
+		int MAGIC = 1;
 		
+		Hashtable<Integer,Photo> Visited = new Hashtable<Integer,Photo>();
+		
+		for(int i=0; i<A.size();i+=1) {
+			
+			if(Visited.get(i)==null) {
+				CorrectOrder.add(A.get(i));
+				Visited.put(i, A.get(i));
+			}
+			
+			int MAX = 0;
+			int IDX = -1;
+	
+			//Choose a random picture and Switch to absolute picture matching every so often
+			//int R = Randoms.get(i);
+			/*int R = MAGIC;
+			if(R==0)
+				R=1;
+			*/
+			/////////////////////////////////////////////////////////////////////// MAGIC NUMBER!!!!!!!!
+			if(i%(A.size()/MAGIC)==0) {
+			/////////////////////////////////////////////////////////////////////////////////////////
+			
+			//See if InterestFactor is ideal
+			if(i!=A.size()-1) {
+				
+			int k = Randoms.get(i+1);
+			
+			if(k<A.size() && k!=i && Visited.get(k)==null) {
+			
+			int I = InterestFactor(A.get(i),A.get(k));
+			
+			if(I>MAX) {
+				MAX=I;
+				IDX = k;
+				
+			}
+			
+			}
+			
+			}
+			
+			}
+			
+			else {
+			for(int k=0;k<A.size();k+=1) {
+				if(k!=i) {
+					
+					int I = InterestFactor(A.get(i),A.get(k));
+					if(I>MAX && I!=0) {
+						MAX=I;
+						IDX = k;
+					}
+					
+				}
+			}
+		}
+			if(IDX!=-1)
+			if(Visited.get(IDX)==null) {
+				CorrectOrder.add(A.get(IDX));
+				Visited.put(IDX, A.get(IDX));
+			}	
+			
+		}
+		
+		//System.out.println("CORRECT ORDER:"+CorrectOrder);
+		
+		return CorrectOrder;
 	}
 
 	private static int SizeAll(ArrayList<Hashtable<Photo, Photo>> allVisited) {
@@ -188,6 +137,17 @@ public class Photo {
 		return SIZE;
 	}
 
+	private static int GRNR(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
+	
 	/**
 	 * Size of all hashes in ht
 	 * @param vI
@@ -211,13 +171,17 @@ public class Photo {
 		//IIF VERTICAL AND HORIZONTAL PHOTOS COMPARED
 		if(P1.Type.compareTo(P2.Type)!=0) {
 			//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+-1+"\n");
-			
-			return -1;
+			return 0;
 		}
 		
+		int FACTOR = P1.Tags.size()>P2.Tags.size()? P2.Tags.size():P1.Tags.size();
+		//int FACTOR = P1.Tags.size()+P2.Tags.size();
+		
+		int MATCHING = 0;
+		
 		int[] S = {
-		P1.Tags.size(),
-		P2.Tags.size(),
+		0,
+		0,
 		0
 		};
 		
@@ -229,14 +193,41 @@ public class Photo {
 			H.put(P1.Tags.get(i), P1.Tags.get(i));
 		}
 		
-		i=0;
-		
 		//Look for any similar tags and add those to count s3
-		for(;i<P2.Tags.size();i+=1) {
+		for(i=0;i<P2.Tags.size();i+=1) {
 			if(H.get(P2.Tags.get(i))!=null) {
 				S[2]+=1;
+				//MATCHING+=1;
+			}
+			else {
+				S[0]+=1;
+				MATCHING+=1;
 			}
 		}
+		
+		Hashtable<String,String> H2 = new Hashtable<String,String>();
+		
+		int MATCHING2 = 0;
+		
+		for(;i<P2.Tags.size();i+=1) {
+			H2.put(P2.Tags.get(i), P2.Tags.get(i));
+		}
+		
+		//Look for any similar tags and add those to count s3
+		for(i=0;i<P1.Tags.size();i+=1) {
+			if(H2.get(P1.Tags.get(i))!=null) {
+				//S[2]+=1;
+			}
+			else {
+				S[1]+=1;
+				MATCHING+=1;
+			}
+		}
+		
+		/*
+		if(MATCHING2>MATCHING)
+			MATCHING=MATCHING2;
+		*/
 		
 		int MIN = Integer.MAX_VALUE;
 	
@@ -247,7 +238,7 @@ public class Photo {
 				MIN = S[i];
 		}
 		
-		//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+MIN+"\n");
+		//System.out.println("\nINTEREST FACTOR FOR "+P1 +" AND "+P2 +":"+(MIN)+"\n");
 		
 		return MIN;
 	}
@@ -260,7 +251,7 @@ public class Photo {
 		
 		InputStream inputstream = null;
 		try {
-			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"A.txt");
+			inputstream = new FileInputStream(System.getProperty("java.class.path")+"/"+"B.txt");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -355,7 +346,7 @@ public class Photo {
 		
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("./src/AnswerA.txt", "UTF-8");
+			writer = new PrintWriter("./src/AnswerB.txt", "UTF-8");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
